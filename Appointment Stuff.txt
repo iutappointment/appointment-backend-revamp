@@ -6,93 +6,93 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 PATIENTS TABLE
 
-create table patient(
-id uuid primary key,
-name varchar(100) not null,
-email varchar(100) not null unique,
-pass varchar(255) not null unique,
-phone varchar(15),
-dob date,
-gender varchar(2) check (gender in ('M', 'F', 'Z')),
-blood varchar(4) check (blood in ('A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-')),
-past varchar(255),
-address varchar(100),
-createdAt date,
-updatedAt date);
+create table "patients"(
+"id" uuid primary key,
+"name" varchar(100) not null,
+"email" varchar(100) not null unique,
+"pass" varchar(255) not null unique,
+"phone" varchar(15),
+"dob" date,
+"gender" varchar(2) check ("gender" in ('M', 'F', 'Z')),
+"blood" varchar(4) check ("blood" in ('A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-')),
+"past" varchar(255),
+"address" varchar(100),
+"createdAt" date,
+"updatedAt" date);
 
 
 
 DOCTORS TABLE
 
-create table doctor(
-id uuid primary key,
-name varchar(100) not null,
-email varchar(100) not null unique,
-password varchar(255) not null,
-phone varchar(15),
-dob date,
-gender varchar(2) check (gender in ('M', 'F', 'Z')),
-blood varchar(4) check (blood in ('A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-')), 
-address varchar(100),
-specialty varchar(20),
-bmdc varchar(20),
-createdAt date,
-updatedAt date);
+create table "doctors"(
+"id" uuid primary key,
+"name" varchar(100) not null,
+"email" varchar(100) not null unique,
+"pass" varchar(255) not null,
+"phone" varchar(15),
+"dob" date,
+"gender" varchar(2) check ("gender" in ('M', 'F', 'Z')),
+"blood" varchar(4) check ("blood" in ('A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-')), 
+"address" varchar(100),
+"specialty" varchar(20),
+"bmdc" varchar(20),
+"createdAt" date,
+"updatedAt" date);
 
 
 
 DOCTOR SLOTS TABLE
 
-create table doctor_slot(
-doctor_id uuid unique not null references doctor(id) on delete cascade,
-slotid uuid unique,
-dateOfSlot date,
-startTime time,
-endTime time,
-status numeric check (status in (0, 1)),
-createdAt date,
-updatedAt date);
+create table "slots"(
+"doctorId" uuid unique not null references doctors(id) on delete cascade,
+"id" uuid unique,
+"dateOfSlot" date,
+"startTime" time,
+"endTime" time,
+"status" numeric check ("status" in (0, 1)),
+"createdAt" date,
+"updatedAt" date);
 
 
 
 DOCTOR PATIENT LIST TABLE
 
-create table doctor_patient(
-doctor_id uuid not null references doctor(id) on delete cascade,
-patient_id uuid not null references patient(id) on delete cascade,
-dateOfAssignment date not null);
+create table "doctor_patient"(
+"doctorId" uuid not null references doctors(id) on delete cascade,
+"patientId" uuid not null references patients(id) on delete cascade,
+"dateOfAssignment" date not null);
 
-alter table doctor_patient
-add constraint unq_constraint unique(doctor_id, patient_id);
+alter table "doctor_patient"
+add constraint unq_constraint unique("doctorId", "patientId");
 
 
 
 APPOINTMENTS TABLE
 
-create table appointment(
-doctor_id uuid not null references doctor(id) on delete cascade,
-patient_id uuid not null references patient(id) on delete cascade,
-prescription varchar(255),
-dateOfAppointment date not null,
-slotid uuid references doctor_slot(slotid) on delete cascade,
-status varchar(30) check (status in ('Scheduled', 'Complete')),
-createdAt date,
-updatedAt date);
+create table "appointments"(
+"doctorId" uuid not null references doctors(id) on delete cascade,
+"patientId" uuid not null references patients(id) on delete cascade,
+"prescription" varchar(255),
+"dateOfAppointment" date not null,
+"slotId" uuid references slots(id) on delete cascade,
+"status" varchar(30) check ("status" in ('Scheduled', 'Complete')),
+"createdAt" date,
+"updatedAt" date);
 
 
 
 RATINGS TABLE
 
-create table doctor_rating(
-doctor_id uuid not null references doctor(id) on delete cascade,
-numratings numeric,
-sumratings numeric,
-average numeric,
-createdAt date,
-updatedAt date);
+create table "ratings"(
+"doctorId" uuid not null references doctors(id) on delete cascade,
+"numRatings" numeric,
+"sumRatings" numeric,
+"average" numeric,
+"createdAt" date,
+"updatedAt" date);
 
-alter table doctor_rating
-add constraint unq1_constraint unique(doctor_id);
+alter table "ratings"
+add constraint unq1_constraint unique("doctorId");
 
 
 
@@ -106,7 +106,7 @@ returns trigger
 as
 $$
 begin
-insert into doctor_rating (doctor_id, numratings, sumratings, average)
+insert into "ratings" ("doctorId", "numRatings", "sumRatings", "average")
 values (NEW.id, 0, 0, 0);
 return new;
 end;
@@ -115,7 +115,7 @@ language plpgsql;
 
 create trigger doc2ratingTrig
 after insert
-on doctor
+on "doctors"
 for each row
 execute procedure doc2rating();
 
@@ -128,11 +128,11 @@ returns trigger
 as
 $$
 begin
-if exists (select * from doctor_patient where doctor_id = NEW.doctor_id and patient_id = NEW.patient_id)
+if exists (select * from "doctor_patient" where "doctorId" = NEW."doctorId" and "patientId" = NEW."patientId")
 then
 RAISE NOTICE 'Already listed';
 else
-insert into doctor_patient (doctor_id, patient_id, dateOfAssignment) values (NEW.doctor_id, NEW.patient_id, now());
+insert into "doctor_patient" ("doctorId", "patientId", "dateOfAssignment") values (NEW."doctorId", NEW."patientId", now());
 end if;
 return new;
 end;
@@ -141,7 +141,7 @@ language plpgsql;
 
 create trigger app2regTrig
 after insert
-on appointment
+on "appointments"
 for each row
 execute procedure app2reg();
 
@@ -157,12 +157,12 @@ declare
 dateRegCmp date;
 dateAppCmp date;
 begin
-dateAppCmp := OLD.dateOfAppointment;
-select dateOfAssignment into dateRegCmp from doctor_patient where patient_id = OLD.patient_id and doctor_id = OLD.doctor_id;
+dateAppCmp := OLD."dateOfAppointment";
+select "dateOfAssignment" into dateRegCmp from "doctor_patient" where "patientId" = OLD."patientId" and "doctorId" = OLD."doctorId";
 RAISE NOTICE 'dateAppCmp = %, dateRegCmp = %', dateAppCmp, dateRegCmp;
 if ( dateAppCmp > dateRegCmp )
 then
-delete from doctor_patient where doctor_id = OLD.doctor_id and patient_id = OLD.patient_id;
+delete from "doctor_patient" where "doctorId" = OLD."doctorId" and "patientId" = OLD."patientId";
 end if;
 return new;
 end;
@@ -171,6 +171,6 @@ language plpgsql;
 
 create trigger regRemoveTrig
 after delete
-on appointment
+on "appointments"
 for each row
 execute procedure regRemove();
