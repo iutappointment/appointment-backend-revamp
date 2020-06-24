@@ -4,17 +4,12 @@ require('dotenv').config()
 const port = process.env.PORT || 6996
 const app = express()
 
-const sequelize = require('./config/db')
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-sequelize.authenticate()
-    .then(()=>
-    {
-        console.log("Up and running")
-    })
-    .catch((err)=>
-    {
-        console.log(`Error: ${err}`)
-    })
+const authRoute = require("./routes/auth")
+
+app.use("/auth", authRoute)
 
 app.listen(port, () => {
     console.log(`Server up and running on ${port}`)

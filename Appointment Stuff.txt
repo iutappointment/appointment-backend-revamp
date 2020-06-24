@@ -84,15 +84,12 @@ create table "appointments"(
 RATINGS TABLE
 
 create table "ratings"(
-"doctorId" uuid not null references doctors(id) on delete cascade,
+"doctorId" uuid primary key references doctors(id) on delete cascade,
 "numRatings" numeric,
 "sumRatings" numeric,
 "average" numeric,
 "createdAt" date,
 "updatedAt" date);
-
-alter table "ratings"
-add constraint unq1_constraint unique("doctorId");
 
 
 
