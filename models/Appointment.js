@@ -1,4 +1,7 @@
 const Sequelize = require('sequelize')
+const Doctor = require("./Doctor")
+const Patient = require("./Patient")
+const Slot = require("./Slot")
 const sequelize = require('../config/db')
 
 const Appointment = sequelize.define('appointment',
@@ -6,12 +9,22 @@ const Appointment = sequelize.define('appointment',
     doctorId:
         {
             type: Sequelize.UUIDV4,
-            allowNull: false
+            allowNull: false,
+            references:
+                {
+                    model: Doctor,
+                    key: 'id'
+                }
         },
     patientId:
         {
             type: Sequelize.UUIDV4,
-            allowNull: false
+            allowNull: false,
+            references:
+                {
+                    model: Patient,
+                    key: 'id'
+                }
         },
     dateOfAppointment:
         {
@@ -20,7 +33,12 @@ const Appointment = sequelize.define('appointment',
         },
     slotId:
         {
-            type: Sequelize.UUIDV4
+            type: Sequelize.UUIDV4,
+            references:
+                {
+                    model: Slot,
+                    key: 'id'
+                }
         },
     prescription:
         {

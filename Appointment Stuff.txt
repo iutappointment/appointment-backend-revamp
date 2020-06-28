@@ -44,7 +44,7 @@ create table "doctors"(
 DOCTOR SLOTS TABLE
 
 create table "slots"(
-"doctorId" uuid unique not null references doctors(id) on delete cascade,
+"doctorId" uuid not null references doctors(id) on delete cascade,
 "id" uuid unique,
 "dateOfSlot" date,
 "startTime" time,

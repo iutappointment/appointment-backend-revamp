@@ -8,8 +8,6 @@ const uuid = require('uuid')
 //signup
 exports.registerDoctorBasic = (req, res) =>
 {
-    console.log(req.body)
-
     const name = req.body.name
     const email = req.body.email
     const pass = genPassword(req.body.pass)
@@ -34,8 +32,6 @@ exports.registerDoctorBasic = (req, res) =>
 
 exports.registerPatientBasic = (req, res) =>
 {
-    console.log(req.body)
-
     const name = req.body.name
     const email = req.body.email
     const pass = genPassword(req.body.pass)

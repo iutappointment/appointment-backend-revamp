@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize')
+const Doctor = require("./Doctor")
 const sequelize = require('../config/db')
 
 const Slot = sequelize.define('slot',
@@ -11,7 +12,12 @@ const Slot = sequelize.define('slot',
     doctorId:
         {
             type: Sequelize.UUIDV4,
-            allowNull: false
+            allowNull: false,
+            references:
+                {
+                    model: Doctor,
+                    key: 'id'
+                }
         },
     dateOfSlot:
         {
@@ -27,7 +33,7 @@ const Slot = sequelize.define('slot',
         },
     status:
         {
-            type: Sequelize.STRING
+            type: Sequelize.INTEGER
         }
 })
 
