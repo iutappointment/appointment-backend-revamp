@@ -20,3 +20,24 @@ exports.completeInfoPatient = (req, res) => {
             res.status(500).json({message: "Internal server error: " + err})
         })
 }
+
+exports.getSinglePatient = async (req, res) => {
+    try
+    {
+        const { patientId } = req.body
+        const user = await pat.findByPk(doctorId)
+        if ( !user )
+        {
+            res.status(404).json({message: "Patient not found"})
+        }
+        else
+        {
+            const userObj = user.toJSON()
+            delete userObj.pass
+            res.status(200).json({message: "Patient found successfully", userObj})
+        }
+    }
+    catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}
