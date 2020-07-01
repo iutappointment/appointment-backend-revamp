@@ -6,52 +6,54 @@ const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 
 //signup
-exports.registerDoctorBasic = (req, res) =>
+exports.registerDoctorBasic = async (req, res) =>
 {
-    const name = req.body.name
-    const email = req.body.email
-    const pass = genPassword(req.body.pass)
+    try {
+        const name = req.body.name
+        const email = req.body.email
+        const pass = genPassword(req.body.pass)
 
-    doc.create(
+        const user = await doc.create({ id: uuid.v4(), name: name, email: email, pass: pass })
+
+        if ( !user )
         {
-            id: uuid.v4(),
-            name: name,
-            email: email,
-            pass: pass
+            res.status(500).json({message: "Unable to create doctor"})
         }
-    )
-        .then( (doc) => {
-            res.status(200).json({message: "Registered successfully", doc: doc})
-        })
-        .catch( (err) => {
-            console.log(err)
-            res.status(500).json({message: "Internal server error"})
-        })
-
+        else
+        {
+            const userObj = user.toJSON()
+            delete userObj.pass
+            res.status(200).json({message: "Doctor created successfully", userObj})
+        }
+    }
+    catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
 }
 
-exports.registerPatientBasic = (req, res) =>
+exports.registerPatientBasic = async (req, res) =>
 {
-    const name = req.body.name
-    const email = req.body.email
-    const pass = genPassword(req.body.pass)
+    try {
+        const name = req.body.name
+        const email = req.body.email
+        const pass = genPassword(req.body.pass)
 
-    pat.create(
+        const user = await pat.create({ id: uuid.v4(), name: name, email: email, pass: pass })
+
+        if ( !user )
         {
-            id: uuid.v4(),
-            name: name,
-            email: email,
-            pass: pass
+            res.status(500).json({message: "Unable to create patient"})
         }
-    )
-        .then( (pat) => {
-            res.status(200).json({message: "Registered successfully", pat: pat})
-        })
-        .catch( (err) => {
-            console.log(err)
-            res.status(500).json({message: "Internal server error"})
-        })
-
+        else
+        {
+            const userObj = user.toJSON()
+            delete userObj.pass
+            res.status(200).json({message: "Patient created successfully", userObj})
+        }
+    }
+    catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
 }
 
 
