@@ -39,3 +39,19 @@ exports.createSlot = async (req, res) => {
         res.status(500).json({message: "Internal server error"})
     }
 }
+
+exports.getSlotById = async (req, res) => {
+    try {
+        const { slotId } = req.body
+        console.log(slotId)
+        const slotRet = await slot.findByPk(slotId, {include: [{model: doc}]})
+        if ( slotRet )
+            res.status(200).json({message: "Slot retrieved successfully", slotRet})
+        else
+            res.status(404).json({message: "Slot not found"})
+    }
+    catch (e) {
+        console.log(e)
+        res.status(500).json({message: "Internal server error"})
+    }
+}

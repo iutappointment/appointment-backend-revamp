@@ -37,4 +37,8 @@ const Slot = sequelize.define('slot',
         }
 })
 
+Slot.belongsTo(Doctor, {
+    foreignKey: "doctorId"
+})
+
 module.exports = Slot
