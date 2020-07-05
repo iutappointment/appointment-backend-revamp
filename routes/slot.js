@@ -4,6 +4,6 @@ const router = require("express").Router()
 
 router.post("/create", passport.authenticate('jwtDoc', {session: false}), createSlot)
 router.post("/getSlotByID", getSlotById)
-router.post("/deleteSlotByDoctorId", deleteSlotsByDoctorId)
+router.post("/deleteSlotByDoctorId", passport.authenticate('jwtDoc', {session: false}), deleteSlotsByDoctorId)
 
 module.exports = router
