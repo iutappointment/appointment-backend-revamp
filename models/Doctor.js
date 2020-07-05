@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize')
+const Rating = require("../models/Rating")
 const sequelize = require('../config/db')
 
 const Doctor = sequelize.define('doctor',
@@ -51,6 +52,10 @@ const Doctor = sequelize.define('doctor',
         {
             type: Sequelize.STRING
         }
+})
+
+Doctor.hasOne(Rating, {
+    foreignKey: "doctorId"
 })
 
 module.exports = Doctor
