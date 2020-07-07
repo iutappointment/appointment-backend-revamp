@@ -22,3 +22,7 @@ app.use("/rating", ratingRoute)
 app.listen(port, () => {
     console.log(`Server up and running on ${port}`)
 })
+
+app.get("/", (req, res) => {
+    res.status(200).json({message: "SUCCESS!"})
+})
