@@ -70,7 +70,7 @@ exports.deleteSlotsByDoctorId = async (req, res) => {
     }
 }
 
-exports.deleteSlotId = async (req, res) => {
+exports.deleteSlotById = async (req, res) => {
     try {
         const { slotId } = req.body
         const delSlot = await slot.destroy({where: {slotId: slotId, status: 0}})
