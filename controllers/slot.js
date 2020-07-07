@@ -70,3 +70,16 @@ exports.deleteSlotsByDoctorId = async (req, res) => {
     }
 }
 
+exports.deleteSlotById = async (req, res) => {
+    try {
+        const { slotId } = req.body
+        const delSlot = await slot.destroy({where: {slotId: slotId, status: 0}})
+        if ( delSlot )
+            res.status(200).json({message: "Deleted slot successfully"})
+        else
+            res.status(404).json({message: "Slots not found"})
+    }
+    catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}
