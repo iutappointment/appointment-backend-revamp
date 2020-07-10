@@ -12,12 +12,14 @@ const docRoute = require("./routes/doctor")
 const patRoute = require("./routes/patient")
 const slotRoute = require("./routes/slot")
 const ratingRoute = require("./routes/rating")
+const appointmentRoute = require("./routes/appointment")
 
 app.use("/auth", authRoute)
 app.use("/doctor", docRoute)
 app.use("/patient", patRoute)
 app.use("/slot", slotRoute)
 app.use("/rating", ratingRoute)
+app.use("/appointment", appointmentRoute)
 
 app.listen(port, () => {
     console.log(`Server up and running on ${port}`)

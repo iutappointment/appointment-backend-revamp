@@ -6,15 +6,10 @@ const sequelize = require('../config/db')
 
 const Appointment = sequelize.define('appointment',
 {
-    doctorId:
+    id:
         {
-            type: Sequelize.UUIDV4,
-            allowNull: false,
-            references:
-                {
-                    model: Doctor,
-                    key: 'id'
-                }
+            type:Sequelize.UUIDV4,
+            primaryKey: true
         },
     patientId:
         {
@@ -25,11 +20,6 @@ const Appointment = sequelize.define('appointment',
                     model: Patient,
                     key: 'id'
                 }
-        },
-    dateOfAppointment:
-        {
-            type: Sequelize.DATE,
-            allowNull: false
         },
     slotId:
         {
@@ -48,6 +38,13 @@ const Appointment = sequelize.define('appointment',
         {
             type: Sequelize.STRING
         }
+})
+
+Appointment.belongsTo(Slot, {
+    foreignKey: "slotId"
+})
+Appointment.belongsTo(Patient, {
+    foreignKey: "patientId"
 })
 
 module.exports = Appointment

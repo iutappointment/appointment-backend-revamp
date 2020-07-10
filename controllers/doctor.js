@@ -18,7 +18,6 @@ exports.completeInfoDoctor = async (req, res) => {
     catch (e) {
         res.status(500).json({message: "Internal server error"})
     }
-
 }
 
 exports.getSingleDoctorById = async (req, res) => {
