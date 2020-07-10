@@ -21,7 +21,7 @@ exports.getSinglePatient = async (req, res) => {
     try
     {
         const { patientId } = req.body
-        const user = await pat.findByPk(doctorId)
+        const user = await pat.findByPk(patientId)
         if ( !user )
         {
             res.status(404).json({message: "Patient not found"})

@@ -70,10 +70,8 @@ add constraint unq_constraint unique("doctorId", "patientId");
 APPOINTMENTS TABLE
 
 create table "appointments"(
-"doctorId" uuid not null references doctors(id) on delete cascade,
 "patientId" uuid not null references patients(id) on delete cascade,
 "prescription" varchar(255),
-"dateOfAppointment" date not null,
 "slotId" uuid references slots(id) on delete cascade,
 "status" varchar(30) check ("status" in ('Scheduled', 'Complete')),
 "createdAt" date,
@@ -154,7 +152,7 @@ declare
 dateRegCmp date;
 dateAppCmp date;
 begin
-dateAppCmp := OLD."dateOfAppointment";
+select "dateOfSlot" into dateAppCmp from "slots" where "id" = OLD."slotId";
 select "dateOfAssignment" into dateRegCmp from "doctor_patient" where "patientId" = OLD."patientId" and "doctorId" = OLD."doctorId";
 RAISE NOTICE 'dateAppCmp = %, dateRegCmp = %', dateAppCmp, dateRegCmp;
 if ( dateAppCmp > dateRegCmp )

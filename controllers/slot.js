@@ -59,7 +59,7 @@ exports.getSlotById = async (req, res) => {
 exports.deleteSlotsByDoctorId = async (req, res) => {
     try {
         const { doctorId } = req.body
-        const delSlots = await slot.destroy({where: {doctorId: doctorId}})
+        const delSlots = await slot.destroy({where: {doctorId: doctorId, status: 0}})
         if ( delSlots )
             res.status(200).json({message: "Deleted slots for doctor successfully"})
         else
@@ -73,7 +73,7 @@ exports.deleteSlotsByDoctorId = async (req, res) => {
 exports.deleteSlotById = async (req, res) => {
     try {
         const { slotId } = req.body
-        const delSlot = await slot.destroy({where: {slotId: slotId, status: 0}})
+        const delSlot = await slot.destroy({where: {id: slotId, status: 0}})
         if ( delSlot )
             res.status(200).json({message: "Deleted slot successfully"})
         else
