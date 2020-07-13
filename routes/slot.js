@@ -1,4 +1,4 @@
-const { createSlot, getSlotById, deleteSlotsByDoctorId, deleteSlotById } = require("../controllers/slot")
+const {createSlot, getSlotById, deleteSlotsByDoctorId, deleteSlotById} = require("../controllers/slot")
 const passport = require('../config/passport-strats')
 const router = require("express").Router()
 

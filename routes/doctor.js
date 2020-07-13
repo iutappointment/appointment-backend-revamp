@@ -1,4 +1,4 @@
-const { completeInfoDoctor, getSingleDoctorById, deleteDoctorById, findDoctor, findTopDoctors } = require("../controllers/doctor")
+const {completeInfoDoctor, getSingleDoctorById, deleteDoctorById, findDoctor, findTopDoctors} = require("../controllers/doctor")
 const express = require('express')
 const passport = require('../config/passport-strats')
 const router = express.Router()
