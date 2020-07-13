@@ -1,5 +1,4 @@
 const rat = require("../models/Rating")
-const Sequelize = require('sequelize')
 
 exports.getRatingsById = async (req, res) => {
     try {

@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize')
-const Doctor = require("./Doctor")
 const Patient = require("./Patient")
 const Slot = require("./Slot")
 const sequelize = require('../config/db')
