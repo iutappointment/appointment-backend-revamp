@@ -11,7 +11,7 @@ exports.registerDoctorBasic = async (req, res) =>
     try {
         const name = req.body.name
         const email = req.body.email
-        const pass = genPassword(req.body.pass)
+        const pass = await genPassword(req.body.pass)
 
         const user = await doc.create({ id: uuid.v4(), name: name, email: email, pass: pass })
 
@@ -36,7 +36,7 @@ exports.registerPatientBasic = async (req, res) =>
     try {
         const name = req.body.name
         const email = req.body.email
-        const pass = genPassword(req.body.pass)
+        const pass = await genPassword(req.body.pass)
 
         const user = await pat.create({ id: uuid.v4(), name: name, email: email, pass: pass })
 
@@ -73,8 +73,13 @@ exports.login = (req, res) => {
 }
 
 //hashing function
-function genPassword(password) {
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(password, salt);
-    return hash;
+async function genPassword(password) {
+    try {
+        const salt = await bcrypt.genSaltSync(10);
+        const hash = await bcrypt.hashSync(password, salt);
+        return hash;
+    }
+    catch (e) {
+        console.log(e)
+    }
 }
