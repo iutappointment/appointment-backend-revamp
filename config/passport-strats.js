@@ -62,7 +62,7 @@ passport.use('localDoc', new LocalStrategy(
                 return done(null, false)
             }
 
-            if ( (bcrypt.compareSync(pass, user.pass)) === true )
+            if ( ( await bcrypt.compareSync(pass, user.pass)) === true )
             {
                 return done(null, user)
             }
@@ -93,7 +93,7 @@ passport.use('localPat', new LocalStrategy(
                 return done(null, false)
             }
 
-            if ( (bcrypt.compareSync(pass, user.pass)) === true )
+            if ( (await bcrypt.compareSync(pass, user.pass)) === true )
             {
                 return done(null, user)
             }

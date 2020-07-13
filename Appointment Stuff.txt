@@ -70,10 +70,9 @@ add constraint unq_constraint unique("doctorId", "patientId");
 APPOINTMENTS TABLE
 
 create table "appointments"(
-"doctorId" uuid not null references doctors(id) on delete cascade,
+"id" uuid primary key,
 "patientId" uuid not null references patients(id) on delete cascade,
 "prescription" varchar(255),
-"dateOfAppointment" date not null,
 "slotId" uuid references slots(id) on delete cascade,
 "status" varchar(30) check ("status" in ('Scheduled', 'Complete')),
 "createdAt" date,
@@ -124,12 +123,15 @@ create or replace function app2reg()
 returns trigger
 as
 $$
+declare
+doctorId uuid;
 begin
-if exists (select * from "doctor_patient" where "doctorId" = NEW."doctorId" and "patientId" = NEW."patientId")
+select "doctorId" into doctorId from "slots" where "id" = NEW."slotId";
+if exists (select * from "doctor_patient" where "doctorId" = doctorId and "patientId" = NEW."patientId")
 then
 RAISE NOTICE 'Already listed';
 else
-insert into "doctor_patient" ("doctorId", "patientId", "dateOfAssignment") values (NEW."doctorId", NEW."patientId", now());
+insert into "doctor_patient" ("doctorId", "patientId", "dateOfAssignment") values (doctorId, NEW."patientId", now());
 end if;
 return new;
 end;
@@ -153,13 +155,15 @@ $$
 declare
 dateRegCmp date;
 dateAppCmp date;
+doctorId uuid;
 begin
-dateAppCmp := OLD."dateOfAppointment";
-select "dateOfAssignment" into dateRegCmp from "doctor_patient" where "patientId" = OLD."patientId" and "doctorId" = OLD."doctorId";
-RAISE NOTICE 'dateAppCmp = %, dateRegCmp = %', dateAppCmp, dateRegCmp;
+select "dateOfSlot" into dateAppCmp from "slots" where "id" = OLD."slotId";
+select "doctorId" into doctorId from "slots" where "id" = OLD."slotId";
+select "dateOfAssignment" into dateRegCmp from "doctor_patient" where "patientId" = OLD."patientId" and "doctorId" = doctorId;
+RAISE NOTICE 'dateAppCmp = %, dateRegCmp = %, doctorId = %', dateAppCmp, dateRegCmp, doctorId;
 if ( dateAppCmp > dateRegCmp )
 then
-delete from "doctor_patient" where "doctorId" = OLD."doctorId" and "patientId" = OLD."patientId";
+delete from "doctor_patient" where "doctorId" = doctorId and "patientId" = OLD."patientId";
 end if;
 return new;
 end;
