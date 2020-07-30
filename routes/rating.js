@@ -1,4 +1,4 @@
-const { getRatingsById, editRatingsById } = require("../controllers/rating")
+const {getRatingsById, editRatingsById} = require("../controllers/rating")
 const express = require('express')
 const passport = require('../config/passport-strats')
 const router = express.Router()

@@ -6,52 +6,43 @@ const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 
 //signup
-exports.registerDoctorBasic = async (req, res) =>
-{
+exports.registerDoctorBasic = async (req, res) => {
     try {
         const name = req.body.name
         const email = req.body.email
+        const bmdc = req.body.bmdc
         const pass = await genPassword(req.body.pass)
 
-        const user = await doc.create({ id: uuid.v4(), name: name, email: email, pass: pass })
+        const user = await doc.create({id: uuid.v4(), name: name, email: email, pass: pass, bmdc: bmdc})
 
-        if ( !user )
-        {
+        if (!user) {
             res.status(500).json({message: "Unable to create doctor"})
-        }
-        else
-        {
+        } else {
             const userObj = user.toJSON()
             delete userObj.pass
             res.status(200).json({message: "Doctor created successfully", userObj})
         }
-    }
-    catch (e) {
+    } catch (e) {
         res.status(500).json({message: "Internal server error"})
     }
 }
 
-exports.registerPatientBasic = async (req, res) =>
-{
+exports.registerPatientBasic = async (req, res) => {
     try {
         const name = req.body.name
         const email = req.body.email
         const pass = await genPassword(req.body.pass)
 
-        const user = await pat.create({ id: uuid.v4(), name: name, email: email, pass: pass })
+        const user = await pat.create({id: uuid.v4(), name: name, email: email, pass: pass})
 
-        if ( !user )
-        {
+        if (!user) {
             res.status(500).json({message: "Unable to create patient"})
-        }
-        else
-        {
+        } else {
             const userObj = user.toJSON()
             delete userObj.pass
             res.status(200).json({message: "Patient created successfully", userObj})
         }
-    }
-    catch (e) {
+    } catch (e) {
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -59,15 +50,12 @@ exports.registerPatientBasic = async (req, res) =>
 
 //login
 exports.login = (req, res) => {
-    if ( req.user )
-    {
+    if (req.user) {
         const jwt = JWT.sign({iss: "AppOintment", sub: req.user.id, iat: new Date().getTime()}, process.env.JWT_SECRET)
         const user = req.user.toJSON()
         delete user.pass
         res.status(200).json({jwt, user})
-    }
-    else
-    {
+    } else {
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -76,10 +64,8 @@ exports.login = (req, res) => {
 async function genPassword(password) {
     try {
         const salt = await bcrypt.genSaltSync(10);
-        const hash = await bcrypt.hashSync(password, salt);
-        return hash;
-    }
-    catch (e) {
+        return await bcrypt.hashSync(password, salt);
+    } catch (e) {
         console.log(e)
     }
 }

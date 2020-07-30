@@ -1,4 +1,4 @@
-const { completeInfoDoctor, getSingleDoctorById, deleteDoctorById, findDoctor, findTopDoctors } = require("../controllers/doctor")
+const {completeInfoDoctor, getSingleDoctorById, deleteDoctorById, findDoctor, findTopDoctors, findTopInAllCategories} = require("../controllers/doctor")
 const express = require('express')
 const passport = require('../config/passport-strats')
 const router = express.Router()
@@ -8,5 +8,6 @@ router.post("/findById", getSingleDoctorById)
 router.post("/deleteById", passport.authenticate('jwtDoc', {session: false}), deleteDoctorById)
 router.post("/find", findDoctor)
 router.post("/findTop", findTopDoctors)
+router.post("/findTopInAllCategories", findTopInAllCategories)
 
 module.exports = router
