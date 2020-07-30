@@ -10,9 +10,10 @@ exports.registerDoctorBasic = async (req, res) => {
     try {
         const name = req.body.name
         const email = req.body.email
+        const bmdc = req.body.bmdc
         const pass = await genPassword(req.body.pass)
 
-        const user = await doc.create({id: uuid.v4(), name: name, email: email, pass: pass})
+        const user = await doc.create({id: uuid.v4(), name: name, email: email, pass: pass, bmdc: bmdc})
 
         if (!user) {
             res.status(500).json({message: "Unable to create doctor"})

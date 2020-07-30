@@ -83,3 +83,25 @@ exports.findTopDoctors = async (req, res) => {
         res.status(500).json({message: "Internal server error"})
     }
 }
+
+exports.findTopInAllCategories = async (req, res) => {
+    try {
+        const criteria = req.body
+        const limit = req.body.limit
+        delete criteria.limit
+        const users = await doc.findAll({
+            group: ['specialty'],
+            include: [{model: rat, required: true}],
+            where: criteria,
+            order: [Sequelize.literal("rating.average DESC")],
+            limit
+        })
+        if (users)
+            res.status(200).json({message: "Doctors found", users})
+        else
+            res.status(404).json({message: "Doctor not found"})
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: "Internal server error"})
+    }
+}

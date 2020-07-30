@@ -77,3 +77,19 @@ exports.deleteSlotById = async (req, res) => {
         res.status(500).json({message: "Internal server error"})
     }
 }
+
+exports.viewAllSlotsByDoctor = async (req, res) => {
+    try {
+        const {doctorId} = req.body
+        const slots = await slot.findAll({
+            where: {doctorId: doctorId},
+            order: [["dateOfSlot", 'ASC'], ["startTime", 'ASC']]
+        })
+        if (slots)
+            res.status(200).json({message: "Slots fetched successfully", slots})
+        else
+            res.status(400).json({message: "Slots not found"})
+    } catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}

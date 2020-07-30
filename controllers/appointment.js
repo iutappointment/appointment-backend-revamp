@@ -3,6 +3,7 @@ const slot = require("../models/Slot")
 const doc = require("../models/Doctor")
 const pat = require("../models/Patient")
 const app = require("../models/Appointment")
+const moment = require('moment')
 
 
 exports.createAppointment = async (req, res) => {
@@ -38,7 +39,7 @@ exports.createAppointment = async (req, res) => {
 exports.viewAppointmentById = async (req, res) => {
     try {
         const {appId} = req.body
-        const appRet = await app.findAll({
+        const appRet = await app.findOne({
             include: [{
                 model: slot,
                 required: true,
@@ -113,6 +114,80 @@ exports.editPrescription = async (req, res) => {
             res.status(404).json({message: "Appointment not found"})
         }
     } catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+
+exports.viewPastAppointmentsPatient = async (req, res) => {
+    try {
+        const {patientId} = req.body.patientId
+        const appsRet = await app.findAll({where: {patientId: patientId, status: "Complete"}})
+        if (appsRet)
+            res.status(200).json({message: "Appointments fetched successfully", appsRet})
+        else
+            res.status(404).json({message: "Appointments not found"})
+    } catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+
+exports.viewPastAppointmentsDoctor = async (req, res) => {
+    try {
+        const {doctorId} = req.body.doctorId
+        const appsRet = await app.findAll({where: {doctorId: doctorId, status: "Complete"}})
+        if (appsRet)
+            res.status(200).json({message: "Appointments fetched successfully", appsRet})
+        else
+            res.status(404).json({message: "Appointments not found"})
+    } catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+
+exports.viewUpcomingAppointmentsPatient = async (req, res) => {
+    try {
+        const {patientId} = req.body.patientId
+        const sysdate = moment(Date.now())
+        sysdate.add(1, 'week')
+        const end = sysdate.format("yyyy-MM-DD")
+        const appRet = await app.findAll({
+            include: [{
+                model: slot,
+                required: true,
+                where: {dateOfSlot: {$lte: end}},
+                include: [{model: doc, required: true}]
+            }, {model: pat, required: true}], where: {patientId: patientId}
+        })
+        if ( appRet )
+            res.status(200).json({message: "Fetched appointments successfully", appRet})
+        else
+            res.status(404).json({message: "Appointments not found"})
+    }
+    catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+
+exports.viewUpcomingAppointmentsDoctor = async (req, res) => {
+    try {
+        const {doctorId} = req.body.doctorId
+        const sysdate = moment(Date.now())
+        sysdate.add(1, 'week')
+        const end = sysdate.format("yyyy-MM-DD")
+        const appRet = await app.findAll({
+            include: [{
+                model: slot,
+                required: true,
+                where: {dateOfSlot: {$lte: end}},
+                include: [{model: doc, required: true}]
+            }, {model: pat, required: true}], where: {doctorId: doctorId}
+        })
+        if ( appRet )
+            res.status(200).json({message: "Fetched appointments successfully", appRet})
+        else
+            res.status(404).json({message: "Appointments not found"})
+    }
+    catch (e) {
         res.status(500).json({message: "Internal server error"})
     }
 }
