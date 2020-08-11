@@ -64,7 +64,7 @@ exports.deleteAppointmentById = async (req, res) => {
             const slotId = appRetObj.slotId
             console.log(`slotid = ${slotId}`)
             const appRetDel = await app.destroy({where: {id: appId}})
-            if (appRetDel) {
+            if (appRetDel.length !== 0) {
                 const slotRetUpd = await slot.update({status: 0}, {where: {id: slotId}})
                 if (slotRetUpd)
                     res.status(200).json({message: "Appointment deleted successfully", appRet})
@@ -120,9 +120,9 @@ exports.editPrescription = async (req, res) => {
 
 exports.viewPastAppointmentsPatient = async (req, res) => {
     try {
-        const {patientId} = req.body.patientId
+        const {patientId} = req.body
         const appsRet = await app.findAll({where: {patientId: patientId, status: "Complete"}})
-        if (appsRet)
+        if (appsRet.length !== 0)
             res.status(200).json({message: "Appointments fetched successfully", appsRet})
         else
             res.status(404).json({message: "Appointments not found"})
@@ -133,9 +133,9 @@ exports.viewPastAppointmentsPatient = async (req, res) => {
 
 exports.viewPastAppointmentsDoctor = async (req, res) => {
     try {
-        const {doctorId} = req.body.doctorId
+        const {doctorId} = req.body
         const appsRet = await app.findAll({where: {doctorId: doctorId, status: "Complete"}})
-        if (appsRet)
+        if (appsRet.length !== 0)
             res.status(200).json({message: "Appointments fetched successfully", appsRet})
         else
             res.status(404).json({message: "Appointments not found"})
@@ -146,19 +146,16 @@ exports.viewPastAppointmentsDoctor = async (req, res) => {
 
 exports.viewUpcomingAppointmentsPatient = async (req, res) => {
     try {
-        const {patientId} = req.body.patientId
-        const sysdate = moment(Date.now())
-        sysdate.add(1, 'week')
-        const end = sysdate.format("yyyy-MM-DD")
+        const {patientId} = req.body
         const appRet = await app.findAll({
             include: [{
                 model: slot,
                 required: true,
-                where: {dateOfSlot: {$lte: end}},
+                where: {dateOfSlot: {$lte: moment().add(1, "week").toDate()}},
                 include: [{model: doc, required: true}]
-            }, {model: pat, required: true}], where: {patientId: patientId}
+            }, {model: pat, required: true, where: {id: patientId}}]
         })
-        if ( appRet )
+        if ( appRet.length !== 0 )
             res.status(200).json({message: "Fetched appointments successfully", appRet})
         else
             res.status(404).json({message: "Appointments not found"})
@@ -170,19 +167,16 @@ exports.viewUpcomingAppointmentsPatient = async (req, res) => {
 
 exports.viewUpcomingAppointmentsDoctor = async (req, res) => {
     try {
-        const {doctorId} = req.body.doctorId
-        const sysdate = moment(Date.now())
-        sysdate.add(1, 'week')
-        const end = sysdate.format("yyyy-MM-DD")
+        const {doctorId} = req.body
         const appRet = await app.findAll({
             include: [{
                 model: slot,
                 required: true,
-                where: {dateOfSlot: {$lte: end}},
-                include: [{model: doc, required: true}]
-            }, {model: pat, required: true}], where: {doctorId: doctorId}
+                where: {dateOfSlot: {$lte: moment().add(1, "week").toDate()}},
+                include: [{model: doc, required: true, where: {id: doctorId}}]
+            }, {model: pat, required: true}]
         })
-        if ( appRet )
+        if ( appRet.length !== 0 )
             res.status(200).json({message: "Fetched appointments successfully", appRet})
         else
             res.status(404).json({message: "Appointments not found"})

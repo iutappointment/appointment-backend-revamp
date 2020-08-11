@@ -4,7 +4,7 @@ exports.getRatingsById = async (req, res) => {
     try {
         const {doctorId} = req.body
         const docRating = await rat.findAll({where: {doctorId}})
-        if (docRating)
+        if (docRating.length !== 0)
             res.status(200).json({message: "Rating found successfully", docRating})
         else
             res.status(404).json({message: "Rating not found"})
