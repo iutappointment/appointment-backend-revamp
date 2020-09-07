@@ -85,7 +85,7 @@ exports.viewAllSlotsByDoctor = async (req, res) => {
             where: {doctorId: doctorId},
             order: [["dateOfSlot", 'ASC'], ["startTime", 'ASC']]
         })
-        if (slots)
+        if (slots.length !== 0)
             res.status(200).json({message: "Slots fetched successfully", slots})
         else
             res.status(400).json({message: "Slots not found"})
