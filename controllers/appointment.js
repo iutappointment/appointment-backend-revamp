@@ -4,7 +4,7 @@ const doc = require("../models/Doctor")
 const pat = require("../models/Patient")
 const app = require("../models/Appointment")
 const moment = require('moment')
-
+const { Op } = require('sequelize')
 
 exports.createAppointment = async (req, res) => {
     try {
@@ -121,7 +121,11 @@ exports.editPrescription = async (req, res) => {
 exports.viewPastAppointmentsPatient = async (req, res) => {
     try {
         const {patientId} = req.body
-        const appsRet = await app.findAll({where: {patientId: patientId, status: "Complete"}})
+        const appsRet = await app.findAll({include: [{
+                model: slot,
+                required: true,
+                include: [{model: doc, required: true}]
+            }, {model: pat, required: true}], where: {patientId: patientId, status: "Complete"}})
         if (appsRet.length !== 0)
             res.status(200).json({message: "Appointments fetched successfully", appsRet})
         else
@@ -134,7 +138,11 @@ exports.viewPastAppointmentsPatient = async (req, res) => {
 exports.viewPastAppointmentsDoctor = async (req, res) => {
     try {
         const {doctorId} = req.body
-        const appsRet = await app.findAll({where: {doctorId: doctorId, status: "Complete"}})
+        const appsRet = await app.findAll({include: [{
+                model: slot,
+                required: true,
+                include: [{model: doc, required: true}]
+            }, {model: pat, required: true}], where: {doctorId: doctorId, status: "Complete"}})
         if (appsRet.length !== 0)
             res.status(200).json({message: "Appointments fetched successfully", appsRet})
         else
@@ -151,7 +159,7 @@ exports.viewUpcomingAppointmentsPatient = async (req, res) => {
             include: [{
                 model: slot,
                 required: true,
-                where: {dateOfSlot: {$lte: moment().add(1, "week").toDate()}},
+                where: {dateOfSlot: {[Op.lte]: moment().add(1, "week").toDate()}},
                 include: [{model: doc, required: true}]
             }, {model: pat, required: true, where: {id: patientId}}]
         })
@@ -172,7 +180,7 @@ exports.viewUpcomingAppointmentsDoctor = async (req, res) => {
             include: [{
                 model: slot,
                 required: true,
-                where: {dateOfSlot: {$lte: moment().add(1, "week").toDate()}},
+                where: {dateOfSlot: {[Op.lte]: moment().add(1, "week").toDate()}},
                 include: [{model: doc, required: true, where: {id: doctorId}}]
             }, {model: pat, required: true}]
         })
