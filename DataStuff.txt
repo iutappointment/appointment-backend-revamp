@@ -1,5 +1,5 @@
-1. Patient demographic (age, address, gender)
-2. Doctor demographic (address, specialty)
-3. Rating (how many doctors at each integer interval of rating)
+1. Patient demographic (age - DONE, address - DONE, gender - DONE)
+2. Doctor demographic (address - DONE, specialty)
+3. Rating (how many doctors at each integer interval of rating) - DONE
 4. Appointment times (most booked, most successfully completed)
 5. ???
