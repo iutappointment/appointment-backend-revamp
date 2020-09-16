@@ -7,6 +7,52 @@ const pool = new Pool(
     }
 )
 
+exports.patientBloodDist = async (req, res) => {
+    try{
+        let blood = []
+        let count = []
+        const queryStr = `select count(*), blood from patients group by blood`
+        const result = await pool.query(queryStr)
+        if ( result.rowCount !== 0 ) {
+            for ( let i = 0 ; i < result.rowCount ; i++ )
+            {
+                if (result.rows[i].blood !== null && result.rows[i].address !== null) {
+                    blood.push(result.rows[i].blood.toString())
+                    count.push(parseInt(result.rows[i].count))
+                }
+            }
+        }
+        res.status(200).json({x: blood, y: count})
+    }
+    catch (e) {
+        console.log(e)
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+
+exports.doctorBloodDist = async (req, res) => {
+    try{
+        let blood = []
+        let count = []
+        const queryStr = `select count(*), blood from doctors group by blood`
+        const result = await pool.query(queryStr)
+        if ( result.rowCount !== 0 ) {
+            for ( let i = 0 ; i < result.rowCount ; i++ )
+            {
+                if (result.rows[i].blood !== null && result.rows[i].address !== null) {
+                    blood.push(result.rows[i].blood.toString())
+                    count.push(parseInt(result.rows[i].count))
+                }
+            }
+        }
+        res.status(200).json({x: blood, y: count})
+    }
+    catch (e) {
+        console.log(e)
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+
 exports.triggerDisp = async ( req, res ) => {
     try {
         const queryStr = `select count("doctorId") from ratings`
