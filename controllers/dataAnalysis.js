@@ -7,6 +7,20 @@ const pool = new Pool(
     }
 )
 
+exports.triggerDisp = async ( req, res ) => {
+    try {
+        const queryStr = `select count("doctorId") from ratings`
+        const result = await pool.query(queryStr)
+        if ( result.rowCount !== 0 )
+        {
+            res.status(200).json({x: "Number of doctors", y: result.rows[0].count})
+        }
+    }
+    catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+
 exports.patientAgeDist = async (req, res) => {
     try{
         let age = []
