@@ -9,18 +9,17 @@ const pool = new Pool(
 
 exports.patientAgeDist = async (req, res) => {
     try{
-        let values = []
         let age = []
         let count = []
-        const queryStr = `select count(*), (extract (year from (age (dob)))) as age from patients group by age having (extract (year from (age (dob)))) between $1 and $2`
-        for ( let i = 0 ; i < 10 ; i++ )
-        {
-            values[0] = i*10
-            values[1] = i*10 + 10
-            const res = await pool.query(queryStr, values)
-            if ( res.rowCount !== 0 ) {
-                age.push(res.rows[0].age)
-                count.push(parseInt(res.rows[0].count))
+        const queryStr = `select count(*), (extract (year from (age (dob)))) as age from patients group by age`
+        const result = pool.query(queryStr)
+        if ( result.rowCount !== 0 ) {
+            for ( let i = 0 ; i < result.rowCount ; i++ )
+            {
+                if (result.rows[i].age !== null && result.rows[i].count !== null) {
+                    age.push(parseInt(result.rows[i].age))
+                    count.push(parseInt(result.rows[i].count))
+                }
             }
         }
         res.status(200).json({x: age, y: count})
