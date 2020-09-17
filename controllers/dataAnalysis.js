@@ -286,3 +286,28 @@ exports.bookedTimeDist = async (req, res) => {
         res.status(500).json({message: "Internal server error"})
     }
 }
+
+exports.prescriptionAnalysis = async (req, res) => {
+    try {
+        let drugArr = []
+        let drugCount = []
+        let diagnosisArr = []
+        let diagnosisCount = []
+        const query = `select prescription from appointments where status = 'Complete' and prescription is not null`
+        const result = await pool.query(query)
+        if (result.rowCount !== 0) {
+            for (let i = 0; i < result.rowCount; i++) {
+                if (result.rows[i].prescription !== null) {
+                    const presStr = result.rows[i].prescription
+                    const drugs = presStr.slice(presStr.search("Drug: ") + 6, presStr.length - 1)
+                    const diagnosis = presStr.slice(presStr.search("Diagnosis: ") + 11, presStr.search("Drug: "))
+                    drugArr.push(drugs)
+                    diagnosisArr.push(diagnosis)
+                }
+            }
+            res.status(200).json({drugs: drugArr, diagnoses: diagnosisArr})
+        }
+    } catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}

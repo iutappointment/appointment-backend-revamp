@@ -1,4 +1,4 @@
-const { patientAgeDist, patientAddressDist, patientGenderDist, doctorAddressDist, doctorSpecialtyDist, doctorRatingDist, triggerDisp, patientBloodDist, doctorBloodDist, doctorGenderDist, appointmentCompletion, bookedTimeDist } = require("../controllers/dataAnalysis")
+const { patientAgeDist, patientAddressDist, patientGenderDist, doctorAddressDist, doctorSpecialtyDist, doctorRatingDist, triggerDisp, patientBloodDist, doctorBloodDist, doctorGenderDist, appointmentCompletion, bookedTimeDist, prescriptionAnalysis } = require("../controllers/dataAnalysis")
 const express = require('express')
 const router = express.Router()
 
@@ -14,5 +14,6 @@ router.get("/doctorBloodDist", doctorBloodDist)
 router.get("/patientBloodDist", patientBloodDist)
 router.get("/appointmentCompletion", appointmentCompletion)
 router.get("/bookedTimeDist", bookedTimeDist)
+router.get("/prescription", prescriptionAnalysis)
 
 module.exports = router
