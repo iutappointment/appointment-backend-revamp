@@ -302,7 +302,6 @@ exports.prescriptionAnalysis = async (req, res) => {
                     let temp = presStr
                     const drugs = temp.slice(presStr.search("Drugs: ") + 7, presStr.length)
                     const sepDrugs = drugs.split(", ")
-                    console.log(sepDrugs)
                     for ( let j = 0 ; j < sepDrugs.length ; j++ )
                     {
                         if ( drugArr.indexOf(sepDrugs[j]) === -1 )
@@ -317,11 +316,23 @@ exports.prescriptionAnalysis = async (req, res) => {
                     }
                     temp = presStr
                     const diagnosis = temp.slice(presStr.search("Diagnosis: ") + 11, presStr.search(" Drugs: "))
-                    drugArr.push(drugs)
-                    diagnosisArr.push(diagnosis)
+                    // diagnosisArr.push(diagnosis)
+                    const sepDx = diagnosis.split(", ")
+                    for ( let j = 0 ; j < sepDx.length ; j++ )
+                    {
+                        if ( diagnosisArr.indexOf(sepDx[j]) === -1 )
+                        {
+                            diagnosisArr.push(sepDx[j])
+                            diagnosisCount.push(1)
+                        }
+                        else
+                        {
+                            diagnosisCount[diagnosisArr.indexOf(sepDx[j])]++
+                        }
+                    }
                 }
             }
-            res.status(200).json({drugs: drugArr, drugsCount: drugCount, diagnoses: diagnosisArr})
+            res.status(200).json({drugs: drugArr, drugsCount: drugCount, diagnoses: diagnosisArr, diagnosesCount: diagnosisCount})
         }
         else
         {
