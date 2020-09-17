@@ -307,6 +307,10 @@ exports.prescriptionAnalysis = async (req, res) => {
             }
             res.status(200).json({drugs: drugArr, diagnoses: diagnosisArr})
         }
+        else
+        {
+            res.status(404).json({message: "No complete appointment with prescription found"})
+        }
     } catch (e) {
         res.status(500).json({message: "Internal server error"})
     }
