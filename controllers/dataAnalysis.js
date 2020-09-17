@@ -300,9 +300,9 @@ exports.prescriptionAnalysis = async (req, res) => {
                 if (result.rows[i].prescription !== null) {
                     const presStr = result.rows[i].prescription
                     let temp = presStr
-                    const drugs = temp.slice(presStr.search("Drugs: ") + 6, presStr.length)
+                    const drugs = temp.slice(presStr.search("Drugs: ") + 7, presStr.length)
                     temp = presStr
-                    const diagnosis = temp.slice(presStr.search("Diagnosis: ") + 11, presStr.search("Drugs: "))
+                    const diagnosis = temp.slice(presStr.search("Diagnosis: ") + 11, presStr.search(" Drugs: "))
                     drugArr.push(drugs)
                     diagnosisArr.push(diagnosis)
                 }
