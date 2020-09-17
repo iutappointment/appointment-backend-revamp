@@ -260,3 +260,29 @@ exports.appointmentCompletion = async ( req, res ) => {
         res.status(500).json({message: "Internal server error"})
     }
 }
+
+exports.bookedTimeDist = async (req, res) => {
+    try
+    {
+        let startTime = []
+        let count = []
+        const query = `select count (*), "startTime" from slots where status = 1 group by "startTime" order by count(*)`
+        const result = await pool.query(query)
+        if ( result.rowCount !== 0 )
+        {
+            for ( let i = 0 ; i < result.rowCount ; i++ )
+            {
+                if ( result.rows[i].count !== null && result.rows[i].startTime !== null )
+                {
+                    startTime.push(result.rows[i].startTime)
+                    count.push(parseInt(result.rows[i].count))
+                }
+            }
+            res.status(200).json({x: startTime, y: count})
+        }
+    }
+    catch (e)
+    {
+        res.status(500).json({message: "Internal server error"})
+    }
+}

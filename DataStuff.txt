@@ -1,1 +1,0 @@
-4. Appointment times (most booked, most successfully completed)
