@@ -157,7 +157,8 @@ exports.viewUpcomingAppointmentsPatient = async (req, res) => {
                 required: true,
                 where: {dateOfSlot: {[Op.lte]: moment().add(1, "week").toDate()}},
                 include: [{model: doc, required: true}]
-            }, {model: pat, required: true, where: {id: patientId}}]
+            }, {model: pat, required: true, where: {id: patientId}}],
+            where: {status: "Scheduled"}
         })
         if ( appRet.length !== 0 )
             res.status(200).json({message: "Fetched appointments successfully", appRet})
@@ -178,7 +179,8 @@ exports.viewUpcomingAppointmentsDoctor = async (req, res) => {
                 required: true,
                 where: {dateOfSlot: {[Op.lte]: moment().add(1, "week").toDate()}},
                 include: [{model: doc, required: true, where: {id: doctorId}}]
-            }, {model: pat, required: true}]
+            }, {model: pat, required: true}],
+            where: {status: "Scheduled"}
         })
         if ( appRet.length !== 0 )
             res.status(200).json({message: "Fetched appointments successfully", appRet})
