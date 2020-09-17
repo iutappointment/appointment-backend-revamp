@@ -22,10 +22,13 @@ exports.patientBloodDist = async (req, res) => {
                 }
             }
         }
+        else
+        {
+            res.status(404).json({message: "No data found"})
+        }
         res.status(200).json({x: blood, y: count})
     }
     catch (e) {
-        console.log(e)
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -45,10 +48,13 @@ exports.doctorBloodDist = async (req, res) => {
                 }
             }
         }
+        else
+        {
+            res.status(404).json({message: "No data found"})
+        }
         res.status(200).json({x: blood, y: count})
     }
     catch (e) {
-        console.log(e)
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -60,6 +66,10 @@ exports.triggerDisp = async ( req, res ) => {
         if ( result.rowCount !== 0 )
         {
             res.status(200).json({x: "Number of doctors", y: result.rows[0].count})
+        }
+        else
+        {
+            res.status(404).json({message: "No data found"})
         }
     }
     catch (e) {
@@ -83,10 +93,13 @@ exports.patientAgeDist = async (req, res) => {
                 }
             }
         }
+        else
+        {
+            res.status(404).json({message: "No data found"})
+        }
         res.status(200).json({x: age, y: count})
     }
     catch (e) {
-        console.log(e)
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -106,10 +119,13 @@ exports.patientAddressDist = async (req, res) => {
                 }
             }
         }
+        else
+        {
+            res.status(404).json({message: "No data found"})
+        }
         res.status(200).json({x: address, y: count})
     }
     catch (e) {
-        console.log(e)
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -129,10 +145,13 @@ exports.patientGenderDist = async (req, res) => {
                 }
             }
         }
+        else
+        {
+            res.status(404).json({message: "No data found"})
+        }
         res.status(200).json({x: gender, y: count})
     }
     catch (e) {
-        console.log(e)
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -152,10 +171,13 @@ exports.doctorGenderDist = async (req, res) => {
                 }
             }
         }
+        else
+        {
+            res.status(404).json({message: "No data found"})
+        }
         res.status(200).json({x: gender, y: count})
     }
     catch (e) {
-        console.log(e)
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -175,10 +197,13 @@ exports.doctorAddressDist = async (req, res) => {
                 }
             }
         }
+        else
+        {
+            res.status(404).json({message: "No data found"})
+        }
         res.status(200).json({x: address, y: count})
     }
     catch (e) {
-        console.log(e)
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -198,10 +223,13 @@ exports.doctorSpecialtyDist = async (req, res) => {
                 }
             }
         }
+        else
+        {
+            res.status(404).json({message: "No data found"})
+        }
         res.status(200).json({x: specialty, y: count})
     }
     catch (e) {
-        console.log(e)
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -223,7 +251,6 @@ exports.doctorRatingDist = async (req, res) => {
         res.status(200).json({x: rating, y: count})
     }
     catch (e) {
-        console.log(e)
         res.status(500).json({message: "Internal server error"})
     }
 }
@@ -244,7 +271,7 @@ exports.appointmentCompletion = async ( req, res ) => {
         }
         else
         {
-            res.status(500).json({message: "Internal server error"})
+            res.status(404).json({message: "No data found"})
         }
         if ( comp.rowCount !== 0 )
         {
@@ -252,7 +279,7 @@ exports.appointmentCompletion = async ( req, res ) => {
         }
         else
         {
-            res.status(500).json({message: "Internal server error"})
+            res.status(404).json({message: "No data found"})
         }
         res.status(200).json({x: parseInt(total), y: parseInt(complete)})
     }
@@ -279,6 +306,10 @@ exports.bookedTimeDist = async (req, res) => {
                 }
             }
             res.status(200).json({x: startTime, y: count})
+        }
+        else
+        {
+            res.status(404).json({message: "No data found"})
         }
     }
     catch (e)
@@ -336,7 +367,7 @@ exports.prescriptionAnalysis = async (req, res) => {
         }
         else
         {
-            res.status(404).json({message: "No complete appointment with prescription found"})
+            res.status(404).json({message: "No data found"})
         }
     } catch (e) {
         res.status(500).json({message: "Internal server error"})
