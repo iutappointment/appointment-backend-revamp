@@ -227,3 +227,36 @@ exports.doctorRatingDist = async (req, res) => {
         res.status(500).json({message: "Internal server error"})
     }
 }
+
+exports.appointmentCompletion = async ( req, res ) => {
+    try{
+        let total, complete
+        const totQuery = `select count(*) from appointments`
+        const compQuery = `select count(*) from appointments where status = 'Scheduled'`
+        const tot = await pool.query(totQuery)
+        const comp = await pool.query(compQuery)
+        if ( tot.rowCount !== 0 )
+        {
+            if ( tot.rows[0].count == '0' )
+                res.status(404).json({message: "No appointments scheduled"})
+            else
+                total = tot.rows[0].count
+        }
+        else
+        {
+            res.status(500).json({message: "Internal server error"})
+        }
+        if ( comp.rowCount !== 0 )
+        {
+            complete = comp.rows[0].count
+        }
+        else
+        {
+            res.status(500).json({message: "Internal server error"})
+        }
+        res.status(200).json({x: parseInt(total), y: parseInt(complete)})
+    }
+    catch (e) {
+        res.status(500).json({message: "Internal server error"})
+    }
+}
