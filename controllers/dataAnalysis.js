@@ -137,6 +137,29 @@ exports.patientGenderDist = async (req, res) => {
     }
 }
 
+exports.doctorGenderDist = async (req, res) => {
+    try{
+        let gender = []
+        let count = []
+        const queryStr = `select count(*), gender from doctor group by gender;`
+        const result = await pool.query(queryStr)
+        if ( result.rowCount !== 0 ) {
+            for ( let i = 0 ; i < result.rowCount ; i++ )
+            {
+                if (result.rows[i].gender !== null && result.rows[i].count !== null) {
+                    gender.push(result.rows[i].gender.toString())
+                    count.push(parseInt(result.rows[i].count))
+                }
+            }
+        }
+        res.status(200).json({x: gender, y: count})
+    }
+    catch (e) {
+        console.log(e)
+        res.status(500).json({message: "Internal server error"})
+    }
+}
+
 exports.doctorAddressDist = async (req, res) => {
     try{
         let address = []
