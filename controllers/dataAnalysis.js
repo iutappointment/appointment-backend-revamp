@@ -232,7 +232,7 @@ exports.appointmentCompletion = async ( req, res ) => {
     try{
         let total, complete
         const totQuery = `select count(*) from appointments`
-        const compQuery = `select count(*) from appointments where status = 'Scheduled'`
+        const compQuery = `select count(*) from appointments where status = 'Complete'`
         const tot = await pool.query(totQuery)
         const comp = await pool.query(compQuery)
         if ( tot.rowCount !== 0 )
