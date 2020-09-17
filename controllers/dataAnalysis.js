@@ -141,7 +141,7 @@ exports.doctorGenderDist = async (req, res) => {
     try{
         let gender = []
         let count = []
-        const queryStr = `select count(*), gender from doctor group by gender;`
+        const queryStr = `select count(*), gender from doctors group by gender;`
         const result = await pool.query(queryStr)
         if ( result.rowCount !== 0 ) {
             for ( let i = 0 ; i < result.rowCount ; i++ )
