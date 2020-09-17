@@ -138,11 +138,7 @@ exports.viewPastAppointmentsPatient = async (req, res) => {
 exports.viewPastAppointmentsDoctor = async (req, res) => {
     try {
         const {doctorId} = req.body
-        const appsRet = await app.findAll({include: [{
-                model: slot,
-                required: true,
-                include: [{model: doc, required: true, where: {doctorId: doctorId}}]
-            }, {model: pat, required: true}], where: {status: "Complete"}})
+        const appsRet = await app.findAll({include: [{model: slot, required: true, where: {doctorId: doctorId}, include: [{model: doc, required: true}]}, {model: pat, required: true}], where: {status: "Complete"}})
         if (appsRet.length !== 0)
             res.status(200).json({message: "Appointments fetched successfully", appsRet})
         else
